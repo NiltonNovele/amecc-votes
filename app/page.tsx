@@ -12,6 +12,7 @@ export default function Home() {
   const [hasVoted, setHasVoted] = useState(false);
   const [votes, setVotes] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [loading, setLoading] = useState(false); // <-- loading state
 
   useEffect(() => {
     let existingId = localStorage.getItem("userId");
@@ -28,24 +29,32 @@ export default function Home() {
   }, []);
 
   const handleVote = async () => {
-    if (hasVoted || !userId) return;
+    if (hasVoted || !userId || loading) return;
 
-    await fetch("/api/vote", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId,
-        candidate: "Anderson Manjate",
-        timestamp: new Date(),
-      }),
-    });
+    setLoading(true); // start loading
 
-    localStorage.setItem("hasVoted", "true");
-    setHasVoted(true);
+    try {
+      await fetch("/api/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          candidate: "Anderson Manjate",
+          timestamp: new Date(),
+        }),
+      });
 
-    setTimeout(() => {
-      router.push("/success");
-    }, 500);
+      localStorage.setItem("hasVoted", "true");
+      setHasVoted(true);
+
+      setTimeout(() => {
+        router.push("/success");
+      }, 500);
+    } catch (error) {
+      console.error("Erro ao enviar o voto:", error);
+      alert("Ocorreu um erro ao enviar seu voto. Tente novamente.");
+      setLoading(false); // reset loading on error
+    }
   };
 
   return (
@@ -133,14 +142,14 @@ export default function Home() {
         <div className="flex flex-col items-center gap-6">
           <button
             onClick={handleVote}
-            disabled={hasVoted}
+            disabled={hasVoted || loading} // disable while loading
             className={`px-10 py-3 rounded-full text-white font-medium transition shadow-md ${
-              hasVoted
+              hasVoted || loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-[#3555f0] hover:bg-[#2a47cd]"
             }`}
           >
-            {hasVoted ? "Já votou" : "Votar"}
+            {loading ? "Votando..." : hasVoted ? "Já votou" : "Votar"}
           </button>
 
           <p className="text-lg font-medium text-[#1b1f3b]">
