@@ -152,10 +152,10 @@ export default function Home() {
             {loading ? "Votando..." : hasVoted ? "Já votou" : "Votar"}
           </button>
 
-          <p className="text-lg font-medium text-[#1b1f3b]">
+          {/* <p className="text-lg font-medium text-[#1b1f3b]">
             Votos registados:{" "}
             <span className="font-bold text-[#3555f0]">{votes}</span>
-          </p>
+          </p> */}
         </div>
 
       </main>
