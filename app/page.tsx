@@ -74,7 +74,7 @@ export default function Home() {
               Eleições AMECC
             </h1>
             <p className="text-[#687089] text-sm">
-              Associação Moçambicana de Estudantes em Ciência e Computação
+              Associação Moçambicana de Estudantes na Cidade do Cabo
             </p>
           </div>
         </div>
